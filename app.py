@@ -7,7 +7,7 @@ from pyslope import (Slope,Material)
 
 # Create a Streamlit web app
 def main():
-    st.title("Landslide Prediction and Failure Surface Visualizer")
+    st.title("Landslide Failure Surface Visualizer - An AI Based Tool")
     h = st.number_input('Enter the Slope height')
     l = st.number_input('Enter the Slope length')
     
