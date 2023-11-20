@@ -7,17 +7,18 @@ from pyslope import (Slope,Material)
 
 # Create a Streamlit web app
 def main():
-    st.title("Landslide Failure Surface Visualizer - An AI Based Tool")
-    h = st.number_input('Enter the Slope height')
-    l = st.number_input('Enter the Slope length')
-    
-    def get_predictions(h,l):
-        model = joblib.load("fos_model.sav")
-        return model.predict([[h,l]])
+    st.title("Landslide Failure Surface Visualizer")
+    st.markdown("""<h2 style='text-align: center; color: black;'>An AI Based Tool</h2>""",unsafe_allow_html=True)
+    l = st.number_input('Enter the Slope Length')
+    h = st.number_input('Enter the Slope Height')
+    d = st.number_input('Enter the Water Depth')
+    w = st.number_input('Enter the Unit Weight')
+    a = st.number_input('Enter the Friction Angle')  
+    c = st.number_input('Enter the Effective Cohesion')
     
     if st.button('Visualize'):
         s = Slope(height=h,length=l, angle=None)
-        m1 = Material(unit_weight=18.7,friction_angle=28.2,cohesion=10,depth_to_bottom=30)
+        m1 = Material(unit_weight=w,friction_angle=a,cohesion=c,depth_to_bottom=30)
         s.set_materials(m1)
         s.set_water_table(1)
         s.set_analysis_limits(s.get_top_coordinates()[0] - 5, s.get_bottom_coordinates()[0] + 5)
@@ -28,14 +29,13 @@ def main():
         fig_1.update_layout(width=800, height=600) 
         st.plotly_chart(fig_1)
     
-    if st.button("Predict Factor of Safety"):
-        result = get_predictions(h,l)
-        st.write("Factor of Safety is : ", result[0])
-        if result[0] > 1:
-            st.subheader("It is safe")
-        else:
-            st.subheader("It is not safe")
-
+    def apply_text_color(text, color):
+        return f'<span style="color:{color}">{text}</span>'
+    
+    safe = apply_text_color("If FOS is > 1 : It is safe.", "green")
+    unsafe = apply_text_color("If FOS is < 1 : It is unsafe.", "red")
+    st.markdown(safe, unsafe_allow_html=True)
+    st.markdown(unsafe, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
